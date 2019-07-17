@@ -1,0 +1,5 @@
+data,description,average,minimum,quartile1,median,quartile3,maximum,variance
+label,regular,,,,,,,
+speed,,0,0,7.6261,9.11675,10.3429,15.3024,0
+elevationGradient,,0,-0.679495,-0.0360337,0,0.0389399,0.256845,0
+heartRate,,0,51.2,158.8,170.6,174.6,199.4,0
