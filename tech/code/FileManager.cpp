@@ -12,11 +12,11 @@ class FileManager
 
     public:
 
-    static vector<string> getContent(string folder)
+    static std::vector<std::string> getContent(std::string folder)
     {
-        string name = "";
+        std::string name = "";
 
-        vector <string> content;
+        std::vector <std::string> content;
         
         DIR * dir = nullptr;
         struct dirent * ent = nullptr;

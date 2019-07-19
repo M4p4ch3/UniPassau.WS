@@ -1,17 +1,20 @@
 
 default: main clean
 
-main: GPXDataUnit.o debug.o main.o
-	g++ -o main GPXDataUnit.o debug.o main.o
+main: main.o GPXData.o Stats.o debug.o
+	g++ -o main GPXData.o Stats.o debug.o main.o
 
-debug.o: debug/debug.c
+main.o:
+	gcc -o main.o -c main.cpp -Idebug -IGPXData -IStats
+
+GPXData.o:
+	g++ -o GPXData.o -c GPXData/GPXData.cpp -Idebug
+
+Stats.o:
+	g++ -o Stats.o -c Stats/Stats.cpp
+
+debug.o:
 	g++ -o debug.o -c debug/debug.c
-
-GPXDataUnit.o: GPXDataUnit.cpp
-	g++ -o GPXDataUnit.o -c GPXDataUnit.cpp
-
-main.o: main.cpp GPXDataUnit.h debug/debug.h
-	gcc -o main.o -c main.cpp
 
 clean:
 	rm -f *.o

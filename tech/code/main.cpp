@@ -2,11 +2,11 @@
 # include <iostream>
 # include <vector>
 
-# include "debug/debug.h"
-# include "GPXParser.cpp"
-# include "GPXPreProcessor.cpp"
+# include "debug.h"
+# include "GPXData.h"
+# include "Stats.h"
+
 # include "FileManager.cpp"
-# include "Stats.cpp"
 
 int main()
 {
@@ -20,13 +20,13 @@ int main()
     Stats elevationGradientsStats;
     Stats heartRatesStats;
 
+    GPXData gpxData;
+
     std::vector<double> speeds;
     std::vector<double> elevationGradients;
     std::vector<double> heartRates;
 
     std::vector<std::string> filesNames;
-
-    std::vector<GPXDataUnit> gpxData;
 
     DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("Mode ? (train/predict) : "));
     std::cin >> mode;
@@ -55,12 +55,12 @@ int main()
                 heartRates.clear();
 
                 DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Parsing"));
-                result = GPXParser::parse("../data/train/" + fileName, &label, &gpxData);
+                result = gpxData.parse("../data/train/" + fileName, &label);
 
                 if (result == 0)
                 {
                     DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Processing"));
-                    result = GPXPreProcessor::process(&gpxData, &speeds, &elevationGradients, &heartRates);
+                    result = gpxData.process(&speeds, &elevationGradients, &heartRates);
 
                     if (result == 0)
                     {
@@ -131,12 +131,12 @@ int main()
         std::cin >> fileName;
 
         DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Parsing"));
-        result = GPXParser::parse("../data/predict/" + fileName + ".gpx", &label, &gpxData);
+        result = gpxData.parse("../data/predict/" + fileName + ".gpx", &label);
 
         if (result == 0)
         {
             DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Processing"));
-            result = GPXPreProcessor::process(&gpxData, &speeds, &elevationGradients, &heartRates);
+            result = gpxData.process(&speeds, &elevationGradients, &heartRates);
 
             if (result == 0)
             {
