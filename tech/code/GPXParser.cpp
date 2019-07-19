@@ -3,6 +3,7 @@
 # include <vector>
 # include <fstream>
 
+# include "debug/debug.h"
 # include "GPXDataUnit.h"
 # include "STRUtils.cpp"
 
@@ -95,7 +96,7 @@ class GPXParser
         }
         else
         {
-            std::cout << "Error : Cant open file : " + fileName << std::endl;
+            DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("Error : Cant open file : '%s'", fileName.c_str()));
             
             result = 1;
         }
