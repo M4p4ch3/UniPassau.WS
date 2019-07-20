@@ -1,0 +1,5 @@
+data,description,average,minimum,quartile1,median,quartile3,maximum,variance
+label,overTraining,,,,,,,
+speed,,0,0,7.716,9.35709,10.1839,14.0335,0
+elevationGradient,,0,-0.0931757,-0.0136219,0,0.0111557,0.111997,0
+heartRate,,0,87,124.8,128.4,132.8,148.2,0

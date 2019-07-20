@@ -54,8 +54,9 @@ int main()
                 elevationGradients.clear();
                 heartRates.clear();
 
-                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Parsing"));
+                DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Parsing"));
                 result = gpxData.parse("../data/train/" + fileName, &label);
+                DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Parsing"));
 
                 if (result == 0)
                 {
