@@ -12,6 +12,8 @@ int handleFile(std::string fileName, std::string mode, std::string * label, Stat
 {
     int result = 1;
 
+    std::string statsFileName = "";
+
     std::vector<double> speeds;
     std::vector<double> elevationGradients;
     std::vector<double> heartRates;
@@ -19,7 +21,7 @@ int handleFile(std::string fileName, std::string mode, std::string * label, Stat
     GPXData gpxData;
 
     DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Selected File : '%s'", fileName.c_str()));
-                    
+
     DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Parsing"));
     result = gpxData.parse("../data/run/" + mode + "/gpx/" + fileName, label);
     DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Parsing"));
@@ -31,32 +33,43 @@ int handleFile(std::string fileName, std::string mode, std::string * label, Stat
 
         if (result == 0)
         {
-            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Computing Stats"));
-            result = speedsStats->compute(speeds);
-            result = result + elevationGradientsStats->compute(elevationGradients);
-            result = result + heartRatesStats->compute(heartRates);
-
+            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing processed File : 'data/run/processed/%s.csv'", fileName.c_str()));
+            result = FileManager::write("../data/run/processed/" + fileName + ".csv", *label, speeds, elevationGradients, heartRates);
+            
             if (result == 0)
             {
-                if (mode == "train")
+                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Computing Stats"));
+                result = speedsStats->compute(speeds);
+                result = result + elevationGradientsStats->compute(elevationGradients);
+                result = result + heartRatesStats->compute(heartRates);
+
+                if (result == 0)
                 {
-                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/run/train/knime/trainingData.csv'"));
-                    result = FileManager::append("../data/run/train/knime/trainingData.csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
-                } // if (mode == "train")
-                else // (mode == "test")
+                    if (mode == "train")
+                    {
+                        statsFileName = "trainingData";
+                    } // if (mode == "train")
+                    else // (mode == "test")
+                    {
+                        statsFileName = fileName;
+                    } // else // (mode == "test")
+
+                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/run/test/knime/%s.csv'", statsFileName.c_str()));
+                    result = FileManager::append("../data/run/test/knime/" + statsFileName + ".csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
+                    
+                    if (result != 0)
+                    {
+                        DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While Appending Stats to File : 'data/tun/test/knime/%s.csv'", statsFileName.c_str()));
+                    } // if (result != 0)
+                } // if (result == 0)
+                else // (result != 0)
                 {
-                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/tun/test/knime/%s.csv'", fileName.c_str()));
-                    result = FileManager::append("../data/run/test/knime/" + fileName + ".csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
-                } // else // (mode == "test")
-                
-                if (result != 0)
-                {
-                    DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While Appending Stats"));
-                } // if (result != 0)
+                    DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While computing Stats"));
+                } // else // (result != 0)
             } // if (result == 0)
             else // (result != 0)
             {
-                DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While computing Stats"));
+                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("ERROR : While writing processed File : 'data/run/processed/%s.csv'", fileName.c_str()));
             } // else // (result != 0)
         } // if (result == 0)
         else // (result != 0)
