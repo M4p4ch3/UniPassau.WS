@@ -9,7 +9,6 @@ class Stats
 {
     private:
     
-    int elementsNb = 0;
     double average = 0.0;
     double minimum = 0.0;
     double quartile1 = 0.0;
@@ -20,6 +19,8 @@ class Stats
 
     public:
 
+    Stats();
+
     double getAverage();
     double getMinimum();
     double getQuartile1();
@@ -27,6 +28,8 @@ class Stats
     double getQuartile3();
     double getMaximum();
     double getVariance();
+
+    void reset();
 
     int compute(std::vector<double> dataVector);
 };

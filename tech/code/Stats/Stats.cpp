@@ -1,6 +1,11 @@
 
 # include "Stats.h"
 
+Stats::Stats()
+{
+    reset();
+}
+
 double Stats::getAverage()
 {
     return average;
@@ -36,11 +41,22 @@ double Stats::getVariance()
     return variance;
 }
 
+void Stats::reset()
+{
+    average = 0.0;
+    minimum = 0.0;
+    quartile1 = 0.0;
+    median = 0.0;
+    quartile3 = 0.0;
+    maximum = 0.0;
+    variance = 0.0;
+}
+
 int Stats::compute(std::vector<double> dataVector)
 {
     int result = 1;
     
-    elementsNb = dataVector.size();
+    int elementsNb = dataVector.size();
     std::sort(dataVector.begin(), dataVector.end());
 
     minimum = dataVector[0];

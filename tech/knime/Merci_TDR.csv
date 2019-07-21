@@ -1,2 +1,0 @@
-label,speedAverage,speedMinimum,speedQuartile1,speedMedian,speedQuartile3,speedMaximum,speedVariance,elevationGradientAverage,elevationGradientMinimum,elevationGradientQuartile1,elevationGradientMedian,elevationGradientQuartile3,elevationGradientMaximum,elevationGradientVariance,heartRateAverage,heartRateMinimum,heartRateQuartile1,heartRateMedian,heartRateQuartile3,heartRateMaximum,heartRateVariance
-regular,0,0,5.17681,9.24971,10.5943,18.3326,0,0,-1.63984,-0.0398863,0,0.0401565,1.28957,0,0,70.8,132.6,164,173.8,189.6,0

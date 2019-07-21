@@ -29,12 +29,12 @@ int GPXData::parse(std::string fileName, std::string * label)
             {
                 // Get Activity Label (overTraining)
                 *label = STRUtils::getXMLStr(line);
-
-                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Label : %s", label->c_str()));
             }
 
             std::getline(gpxFile, line);
         }
+
+        DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Label : '%s'", label->c_str()));
 
         // Read until end of GPX File
         while (STRUtils::contains(line, "</gpx>") == false)

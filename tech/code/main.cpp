@@ -8,178 +8,182 @@
 
 # include "FileManager.cpp"
 
-int main()
+int handleFile(std::string fileName, std::string mode, std::string * label, Stats * speedsStats, Stats * elevationGradientsStats, Stats * heartRatesStats)
 {
-    std::string label = "";
- 
     int result = 1;
-
-    std::string mode = "";
- 
-    Stats speedsStats;
-    Stats elevationGradientsStats;
-    Stats heartRatesStats;
-
-    GPXData gpxData;
 
     std::vector<double> speeds;
     std::vector<double> elevationGradients;
     std::vector<double> heartRates;
 
-    std::vector<std::string> filesNames;
+    GPXData gpxData;
 
-    DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("Mode ? (train/predict) : "));
-    std::cin >> mode;
+    DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Selected File : '%s'", fileName.c_str()));
+                    
+    DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Parsing"));
+    result = gpxData.parse("../data/run/" + mode + "/gpx/" + fileName, label);
+    DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Parsing"));
 
-    if (mode == "train")
+    if (result == 0)
     {
-        DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Train Mode"));
-
-        DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing Headers of File : 'knime/trainingData.csv'"));
-        result = FileManager::writeStatsHeader("../knime/trainingData.csv");
+        DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Processing"));
+        result = gpxData.process(&speeds, &elevationGradients, &heartRates);
 
         if (result == 0)
         {
-            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Getting Content of Folder : 'data/train'"));
-            filesNames = FileManager::getContent("../data/train/");
-
-            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("%d Files Found", (int)(filesNames.size())));
-
-            for (std::string fileName : filesNames)
-            {
-                DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Selected File : '%s'", fileName.c_str()));
-                
-                label = "";
-                speeds.clear();
-                elevationGradients.clear();
-                heartRates.clear();
-
-                DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Parsing"));
-                result = gpxData.parse("../data/train/" + fileName, &label);
-                DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Parsing"));
-
-                if (result == 0)
-                {
-                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Processing"));
-                    result = gpxData.process(&speeds, &elevationGradients, &heartRates);
-
-                    if (result == 0)
-                    {
-                        DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing File : 'processed/%s.csv'", fileName.c_str()));
-                        result = FileManager::write("../processed/" + fileName + ".csv", label, speeds, elevationGradients, heartRates);
-                        
-                        if (result == 0)
-                        {
-                            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Computing Stats"));
-                            result = speedsStats.compute(speeds);
-                            result = result + elevationGradientsStats.compute(elevationGradients);
-                            result = result + heartRatesStats.compute(heartRates);
-
-                            if (result == 0)
-                            {
-                                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing File : 'stats/%s.csv'", fileName.c_str()));
-                                result = FileManager::write("../stats/" + fileName + ".csv", label, speedsStats, elevationGradientsStats, heartRatesStats);
-
-                                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'knime/trainingData.csv'"));
-                                result = result + FileManager::append("../knime/trainingData.csv", label, speedsStats, elevationGradientsStats, heartRatesStats);
-
-                                if (result == 0)
-                                {
-
-                                }
-                                else
-                                {
-                                    DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While writing File : 'stats/%s.csv', or appending to File : 'knime/trainingData.csv'", fileName.c_str()));
-                                }
-                            }
-                            else
-                            {
-                                DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While computing Stats"));
-                            }
-                        }
-                        else
-                        {
-                            DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While writing File : 'processed/%s.csv'", fileName.c_str()));
-                        }
-                    }
-                    else
-                    {
-                        DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While processing"));
-                    }
-                }
-                else
-                {
-                    DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While parsing"));
-                }
-
-                DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Selected File : '%s'", fileName.c_str()));
-            }
-        }
-        else
-        {
-            DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While writing Header of File : 'knime/trainingData.csv'"));
-        }
-
-        DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Train Mode"));
-    }
-    else if (mode == "predict")
-    {
-        DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Predict Mode"));
-        
-        std::string fileName = "";
-        
-        DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("File : "));
-        std::cin >> fileName;
-
-        DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Parsing"));
-        result = gpxData.parse("../data/predict/" + fileName + ".gpx", &label);
-
-        if (result == 0)
-        {
-            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Processing"));
-            result = gpxData.process(&speeds, &elevationGradients, &heartRates);
+            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Computing Stats"));
+            result = speedsStats->compute(speeds);
+            result = result + elevationGradientsStats->compute(elevationGradients);
+            result = result + heartRatesStats->compute(heartRates);
 
             if (result == 0)
             {
-                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Computing Stats"));
-                result = speedsStats.compute(speeds);
-                result = result + elevationGradientsStats.compute(elevationGradients);
-                result = result + heartRatesStats.compute(heartRates);
-
-                if (result == 0)
+                if (mode == "train")
                 {
-                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing Headers of File : 'knime/%s.csv'", fileName.c_str()));
-                    result = FileManager::writeStatsHeader("../knime/" + fileName + ".csv");
-                    
-                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'knime/%s.csv'", fileName.c_str()));
-                    result = result + FileManager::append("../knime/" + fileName + ".csv", label, speedsStats, elevationGradientsStats, heartRatesStats);
-
-                    if (result == 0)
-                    {
-
-                    }
-                    else
-                    {
-                        DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While writing File : '../knime/%s.csv'", fileName.c_str()));
-                    }
-                }
-                else
+                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/run/train/knime/trainingData.csv'"));
+                    result = FileManager::append("../data/run/train/knime/trainingData.csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
+                } // if (mode == "train")
+                else // (mode == "test")
                 {
-                    DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While computing Stats"));
-                }
-            }
-            else
+                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/tun/test/knime/%s.csv'", fileName.c_str()));
+                    result = FileManager::append("../data/run/test/knime/" + fileName + ".csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
+                } // else // (mode == "test")
+                
+                if (result != 0)
+                {
+                    DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While Appending Stats"));
+                } // if (result != 0)
+            } // if (result == 0)
+            else // (result != 0)
             {
-                DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While processing"));
-            }
-        }
-        else
+                DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While computing Stats"));
+            } // else // (result != 0)
+        } // if (result == 0)
+        else // (result != 0)
         {
-            DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While parsing GPX File : '%s'", fileName.c_str()));
-        }
+            DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While processing"));
+        } // else // (result != 0)
+    } // if (result == 0)
+    else // (result != 0)
+    {
+        DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While parsing"));
+    } // else // (result != 0)
 
-        DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Predict Mode"));
-    }
+    DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Selected File : '%s'", fileName.c_str()));
+
+    return result;
+}
+
+int main()
+{
+    int result = 1;
+
+    std::string mode = "";
+    std::string fileName = "";
+
+    std::string label = "";
+ 
+    std::vector<std::string> filesNames;
+
+    Stats speedsStats;
+    Stats elevationGradientsStats;
+    Stats heartRatesStats;
+
+    while (mode != "-1")
+    {
+        DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("Mode {'train', 'test', '-1'} : "));
+        std::cin >> mode;
+
+        if (mode != "-1")
+        {
+            label = "";
+            speedsStats.reset();
+            elevationGradientsStats.reset();
+            heartRatesStats.reset();
+
+            if (mode == "train")
+            {
+                DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Train Mode"));
+
+                while (fileName != "-1")
+                {
+                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("File Name {'all', <fileName>, '-1'} : "));
+                    std::cin >> fileName;
+
+                    if (fileName != "-1")
+                    {
+                        if (fileName == "all")
+                        {
+                            DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing Headers of File : 'data/run/train/knime/trainingData.csv'"));
+                            result = FileManager::writeStatsHeader("../data/run/train/knime/trainingData.csv");
+                        
+                            if (result == 0)
+                            {
+                                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Getting Content of Folder : 'data/run/train/gpx'"));
+                                filesNames = FileManager::getContent("../data/run/train/gpx");
+
+                                DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("%d Files Found", (int)(filesNames.size())));
+
+                                // For each File
+                                for (std::string fileName : filesNames)
+                                {
+                                    // fileName already contains Extension '.gpx'
+                                    
+                                    result = handleFile(fileName, mode, &label, &speedsStats, &elevationGradientsStats, &heartRatesStats);
+
+                                    if (result != 0)
+                                    {
+                                        DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While handling File"));
+                                    } // if (result != 0)
+                                } // for (std::string fileName : filesNames)
+                            } // if (result == 0)
+                            else // (result != 0)
+                            {
+                                DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While writing Header of File : 'data/run/train/knime/trainingData.csv'"));
+                            } // else // (result != 0)
+                        }
+                        else // (fileName != "all")
+                        {
+                            fileName = fileName + ".gpx";
+                            
+                            result = handleFile(fileName, mode, &label, &speedsStats, &elevationGradientsStats, &heartRatesStats);
+
+                            if (result != 0)
+                            {
+                                DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While handling File"));
+                            } // if (result != 0)
+                        } // else // (fileName != "all")
+                    } // if (fileName != "-1")
+                } // while (fileName != "-1")
+
+                DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Train Mode"));
+            } // if (mode == "train")
+            else if (mode == "test")
+            {
+                DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Test Mode"));
+                
+                while (fileName != "-1")
+                {
+                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("File Name {<fileName>, '-1'} : "));
+                    std::cin >> fileName;
+
+                    if (fileName != "-1")
+                    {
+                        fileName = fileName + ".gpx";
+
+                        result = handleFile(fileName, mode, &label, &speedsStats, &elevationGradientsStats, &heartRatesStats);
+
+                        if (result != 0)
+                        {
+                            DEBUG_PRINT(TYPE_ERROR, STYLE_LINE, ("ERROR : While handling File"));
+                        } // if (result != 0)
+                    } // if (fileName != "-1")
+                } // while (fileName != "-1")
+            
+                DEBUG_PRINT(TYPE_INFO, STYLE_END, ("Test Mode"));
+            } // else if (mode == "test")
+        } // if (mode != "-1")
+    } // while (mode != "-1")
 
     return 0;
 }
