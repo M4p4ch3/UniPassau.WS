@@ -45,7 +45,7 @@ class FileManager
         return content;
     }
 
-    static int write(std::string fileName, std::string label, std::vector<double> speeds, std::vector<double> elevationGradients, std::vector<double> heartRates)
+    static int write(std::string fileName, std::vector<double> speeds, std::vector<double> elevationGradients, std::vector<double> heartRates)
     {
         int result = 1;
         
@@ -67,7 +67,6 @@ class FileManager
                 elementsNb = heartRates.size();
             }
 
-            myFile << "label:'" << label << "'\n";
             myFile << "speed,elevationGradient,heartRate\n";
 
             iVector = 0;

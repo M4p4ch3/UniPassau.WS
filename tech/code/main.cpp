@@ -34,7 +34,7 @@ int handleFile(std::string fileName, std::string mode, std::string * label, Stat
         if (result == 0)
         {
             DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing processed File : 'data/run/processed/%s.csv'", fileName.c_str()));
-            result = FileManager::write("../data/run/processed/" + fileName + ".csv", *label, speeds, elevationGradients, heartRates);
+            result = FileManager::write("../data/run/processed/" + fileName + ".csv", speeds, elevationGradients, heartRates);
             
             if (result == 0)
             {
@@ -54,8 +54,8 @@ int handleFile(std::string fileName, std::string mode, std::string * label, Stat
                         statsFileName = fileName;
                     } // else // (mode == "test")
 
-                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/run/test/knime/%s.csv'", statsFileName.c_str()));
-                    result = FileManager::append("../data/run/test/knime/" + statsFileName + ".csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
+                    DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Appending Stats to File : 'data/run/%s/knime/%s.csv'", mode.c_str(), statsFileName.c_str()));
+                    result = FileManager::append("../data/run/" + mode + "/knime/" + statsFileName + ".csv", *label, *speedsStats, *elevationGradientsStats, *heartRatesStats);
                     
                     if (result != 0)
                     {
@@ -118,6 +118,7 @@ int main()
             {
                 DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Train Mode"));
 
+                fileName = "";
                 while (fileName != "-1")
                 {
                     DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("File Name {'all', <fileName>, '-1'} : "));
@@ -175,6 +176,7 @@ int main()
             {
                 DEBUG_PRINT(TYPE_INFO, STYLE_START, ("Test Mode"));
                 
+                fileName = "";
                 while (fileName != "-1")
                 {
                     DEBUG_PRINT(TYPE_INFO, STYLE_LINE_START, ("File Name {<fileName>, '-1'} : "));
@@ -183,6 +185,9 @@ int main()
                     if (fileName != "-1")
                     {
                         fileName = fileName + ".gpx";
+
+                        DEBUG_PRINT(TYPE_INFO, STYLE_LINE, ("Writing Headers of File : 'data/run/test/knime/%s.csv'", fileName.c_str()));
+                        result = FileManager::writeStatsHeader("../data/run/test/knime/" + fileName + ".csv");
 
                         result = handleFile(fileName, mode, &label, &speedsStats, &elevationGradientsStats, &heartRatesStats);
 
