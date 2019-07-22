@@ -8,13 +8,14 @@ As professord Koumpis said, and as you probably all noticed :
 
 Focusing on Health, more specificly on Mental Health
 Mister Koumpis was fearing that this kind of "Sport Tracking App and Devices" were bad for yout Mental Health
-By non stopping to tell you what you shloud do and what you did wrong
+By non stop telling you what you shloud do, what you shoulnd't do, and what you did wrong
 
 In my opinion, This is not possible with Strava
 I would not describe it as a "Tracking" app, but rather as a "Sport Activity Recorder"
 
-So, in my opinion, Strava is not bad at all for your Mental Health
-But, I think that an other problem might appear : OverTraining
+But, I think that an other problem might appear
+You feel guilty if you don't do enough
+Which can lead to overtraining
 
 ## Problem
 
