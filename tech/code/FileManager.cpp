@@ -90,40 +90,6 @@ class FileManager
         return result;
     }
 
-    static int write(std::string fileName, std::string label, Stats speedsStates, Stats elevationGradientsStats, Stats heartRatesStats)
-    {
-        int result = 1;
-
-        std::ofstream myFile;
-        myFile.open(fileName);
-
-        if (myFile.is_open())
-        {
-            myFile << "data,description,average,minimum,quartile1,median,quartile3,maximum,variance\n";
-            
-            myFile << "label," << label << ",,,,,,,\n";
-            
-            myFile << "speed,," << speedsStates.getAverage() << "," << speedsStates.getMinimum() << "," << speedsStates.getQuartile1() << "," << speedsStates.getMedian() << ",";
-            myFile << speedsStates.getQuartile3() << "," << speedsStates.getMaximum() << "," << speedsStates.getVariance() << "\n";
-
-            myFile << "elevationGradient,," << elevationGradientsStats.getAverage() << "," << elevationGradientsStats.getMinimum() << "," << elevationGradientsStats.getQuartile1() << "," << elevationGradientsStats.getMedian() << ",";
-            myFile << elevationGradientsStats.getQuartile3() << "," << elevationGradientsStats.getMaximum() << "," << elevationGradientsStats.getVariance() << "\n";
-
-            myFile << "heartRate,," << heartRatesStats.getAverage() << "," << heartRatesStats.getMinimum() << "," << heartRatesStats.getQuartile1() << "," << heartRatesStats.getMedian() << ",";
-            myFile << heartRatesStats.getQuartile3() << "," << heartRatesStats.getMaximum() << "," << heartRatesStats.getVariance() << "\n";
-            
-            myFile.close();
-
-            result = 0;
-        }
-        else
-        {
-            result = 1;
-        }
-
-        return result;
-    }
-
     static int writeStatsHeader(std::string fileName)
     {
         int result = 1;
@@ -134,9 +100,9 @@ class FileManager
         if (myFile.is_open())
         {
             myFile << "label,";
-            myFile << "speedAverage,speedMinimum,speedQuartile1,speedMedian,speedQuartile3,speedMaximum,speedVariance,";
-            myFile << "elevationGradientAverage,elevationGradientMinimum,elevationGradientQuartile1,elevationGradientMedian,elevationGradientQuartile3,elevationGradientMaximum,elevationGradientVariance,";
-            myFile << "heartRateAverage,heartRateMinimum,heartRateQuartile1,heartRateMedian,heartRateQuartile3,heartRateMaximum,heartRateVariance\n";
+            myFile << "speedQuartile1,speedMedian,speedQuartile3,";
+            myFile << "elevationGradientQuartile3,";
+            myFile << "heartRateQuartile1,heartRateMedian,heartRateQuartile3\n";
 
             myFile.close();
 
@@ -161,7 +127,8 @@ class FileManager
         {
             myFile << label << ",";
 
-            myFile << speedsStates.getAverage() << "," << speedsStates.getMinimum() << "," << speedsStates.getQuartile1() << "," << speedsStates.getMedian() << ",";
+            /*
+            myFile << speedsStates.getMinimum() << "," << speedsStates.getQuartile1() << "," << speedsStates.getMedian() << ",";
             myFile << speedsStates.getQuartile3() << "," << speedsStates.getMaximum() << "," << speedsStates.getVariance() << ",";
 
             myFile << elevationGradientsStats.getAverage() << "," << elevationGradientsStats.getMinimum() << "," << elevationGradientsStats.getQuartile1() << "," << elevationGradientsStats.getMedian() << ",";
@@ -169,7 +136,12 @@ class FileManager
 
             myFile << heartRatesStats.getAverage() << "," << heartRatesStats.getMinimum() << "," << heartRatesStats.getQuartile1() << "," << heartRatesStats.getMedian() << ",";
             myFile << heartRatesStats.getQuartile3() << "," << heartRatesStats.getMaximum() << "," << heartRatesStats.getVariance() << "\n";
-            
+            //*/
+
+            myFile << speedsStates.getQuartile1() << "," << speedsStates.getMedian() << "," << speedsStates.getQuartile3() << ",";
+            myFile << elevationGradientsStats.getQuartile3() << ",";
+            myFile << heartRatesStats.getQuartile1() << "," << heartRatesStats.getMedian() << "," << heartRatesStats.getQuartile3() << "\n";
+
             myFile.close();
             
             result = 0;
