@@ -27,7 +27,7 @@
 ## How to Use
 
 - Mode `{'train', 'test', '-1'}` :
-  - `'train'` : Process File(s) as training
+  - `'train'` : Process File(s) as training Data
     - File Name `{'all', <fileName>, '-1'}` :
       - `'all'` :
         Process all the Files in : `./tech/data/run/train/gpx/`</br>
