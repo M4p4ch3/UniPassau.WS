@@ -26,22 +26,23 @@
 
 ## How to Use
 
-- Mode {'train', 'test', '-1'} :
+- Mode `{'train', 'test', '-1'}` :
   - `'train'` : Process File(s) as training
-    - File Name {'all', <fileName>, '-1'} :
+    - File Name `{'all', <fileName>, '-1'}` :
       - `'all'` :
-        Process all the Files in : `./tech/data/run/train/gpx/`
-        Write all processed Files in : `./tech/data/run/processed/`
+        Process all the Files in : `./tech/data/run/train/gpx/`</br>
+        Write all processed Files in : `./tech/data/run/processed/`</br>
         Append Stats to the CSV File : `./tech/data/run/train/knime/trainingData.csv`
       - `<fileName>` :
-        Process the file : `./tech/data/run/train/gpx/<fileName>.gpx`
-        Write processed Numbers to the CSV File : `./tech/data/run/processed/<fileName>.gpx.csv`
+        Process the file : `./tech/data/run/train/gpx/<fileName>.gpx`</br>
+        Write processed Numbers to the CSV File : `./tech/data/run/processed/<fileName>.gpx.csv`</br>
         Append Stats to the CSV File : `./tech/data/run/train/knime/trainingData.csv`
       - `"-1"` : Go Back to the previous Menu
   - `"test"` : Process Files as test Data
-    - `<fileName>` :
-        Process the file : `./tech/data/run/test/gpx/<fileName>.gpx`
-        Write processed Numbers to the CSV File : `./tech/data/run/processed/<fileName>.gpx.csv`
+    - File Name `{<fileName>, '-1'}` :
+      - `<fileName>` :
+        Process the file : `./tech/data/run/test/gpx/<fileName>.gpx`</br>
+        Write processed Numbers to the CSV File : `./tech/data/run/processed/<fileName>.gpx.csv`</br>
         Write Stats to the CSV File : `./tech/data/run/test/knime/<fileName>.gpx.csv`
-    - `"-1"` : Go Back to the previous Menu
+      - `"-1"` : Go Back to the previous Menu
   - `"-1"` : Exit
